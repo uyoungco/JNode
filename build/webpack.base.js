@@ -2,6 +2,7 @@ const path = require('path')
 
 
 module.exports = {
+  // resolve: { extensions: ['.js', '.jsx'] }, 忽略后缀
   output: {
     path: path.join(__dirname, '../dist'),
     publicPath: '/public/'

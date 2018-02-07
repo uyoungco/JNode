@@ -10,9 +10,8 @@
     "dev:server": "nodemon server/server.js",
     "clear": "rimraf dist",
     "build": "npm run clear && npm run build:client && npm run build:server",
-    "start": "node server/server.js",
-    "list": "eslint --ext .js --ext .jsx client/",
-    "precommit": "yarn run list"
+    "start": "node server/server.js"
+
   },
   "author": "uyoung",
   "license": "ISC",
