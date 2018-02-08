@@ -1,6 +1,7 @@
 {
     "extends": "standard",
     "rules": {
-    "no-multiple-empty-lines": [0]
+    "no-multiple-empty-lines": [0],
+    "no-multi-spaces":[0]
   }
 }
