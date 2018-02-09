@@ -16,6 +16,7 @@
         "no-multiple-empty-lines": [0],
         "import/extensions":[0],
         "no-multi-spaces":[0],
-        "jsx-a11y/anchor-is-valid":[0]
+        "jsx-a11y/anchor-is-valid":[0],
+        "react/require-default-props":[0]
     }
 }
