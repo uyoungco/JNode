@@ -11,7 +11,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const app = express()
 
 app.use(bodyParser.json())
-app.use(bodyParser().urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(session({
   maxAge: 10 * 60 * 1000,
@@ -22,6 +22,9 @@ app.use(session({
 }))
 
 app.use(favicon(path.join(__dirname, '../favicon.ico')))
+
+app.use('/api/user', require('./util/handle-login'))
+app.use('/api', require('./util/proxy'))
 
 if (!isDev) {
   const serverEntry = require('../dist/server-entry').default
