@@ -10,9 +10,10 @@
     "dev:server": "nodemon server/server.js",
     "clear": "rimraf dist",
     "build": "npm run clear && npm run build:client && npm run build:server",
-    "start": "node server/server.js",
     "list": "eslint --ext .js --ext .jsx client/",
-    "precommit": "yarn run list"
+    "precommit": "yarn run list",
+    "start": "cross-env NODE_ENV=production node server/server.js"
+
   },
   "author": "uyoung",
   "license": "ISC",

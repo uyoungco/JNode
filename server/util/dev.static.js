@@ -3,11 +3,8 @@ const path = require('path')
 const webpack = require('webpack')
 const MemoryFs = require('memory-fs')
 const proxy = require('http-proxy-middleware')
-const serialize = require('serialize-javascript')
-const ejs = require('ejs')
-const asyncBootstrap = require('react-async-bootstrapper').default
-const ReactDomServer = require('react-dom/server')
-const Helmet = require('react-helmet').default
+
+const serverRender = require('./server-render')
 
 const serverConfig = require('../../build/webpack.config.server')
 
@@ -40,7 +37,7 @@ const getModuleFromString = (bundle, filename) => {
 const mfs = new MemoryFs()
 const serverCompiler = webpack(serverConfig)
 serverCompiler.outputFileSystem = mfs
-let serverBundle, createStoreMap
+let serverBundle
 serverCompiler.watch({}, (err, stats) => {
   if (err) throw err
   stats = stats.toJson()
@@ -53,23 +50,19 @@ serverCompiler.watch({}, (err, stats) => {
   )
   const bundle = mfs.readFileSync(bundlePath, 'utf-8')
   const m = getModuleFromString(bundle, 'server-entry.js')
-  serverBundle = m.exports.default
-  createStoreMap = m.exports.createStoreMap
+  serverBundle = m.exports
 })
 
-const getStoreState = (stores) => {
-  return Object.keys(stores).reduce((result, storeName) => {
-    result[storeName] = stores[storeName].toJson()
-    return result
-  }, {})
-}
 
 module.exports = function (app) {
   app.use('/public', proxy({
     target: 'http://localhost:8888'
   }))
 
-  app.get('*', function (req, res) {
+  app.get('*', function (req, res, next) {
+    if (!serverBundle) {
+      return res.send('waiting for compile, refresh later')
+    }
     getTemplate().then(template => {
       return serverRender(serverBundle, template, req, res)
     }).catch(next)
