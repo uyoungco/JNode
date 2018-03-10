@@ -7,6 +7,7 @@ const serialize = require('serialize-javascript')
 const ejs = require('ejs')
 const asyncBootstrap = require('react-async-bootstrapper').default
 const ReactDomServer = require('react-dom/server')
+const Helmet = require('react-helmet').default
 
 const serverConfig = require('../../build/webpack.config.server')
 
@@ -23,13 +24,13 @@ const getTemplate = () => {
 // const Module = module.constructor
 const NativeModule = require('module')
 const vm = require('vm')
-
+// `(function(export, require, module, __filename, __dirname){ ...bundle code})`
 const getModuleFromString = (bundle, filename) => {
   const m = { exports: {} }
   const wrapper = NativeModule.wrap(bundle)
   const script = new vm.Script(wrapper, {
     filename: filename,
-    displayErrors: true,
+    displayErrors: true
   })
   const result = script.runInThisContext()
   result.call(m.exports, m.exports, require, m)
@@ -80,13 +81,18 @@ module.exports = function (app) {
           res.end()
           return
         }
+        const helmet = Helmet.rewind()
         const state = getStoreState(stores)
         // console.log(stores.appState.count)
         const content = ReactDomServer.renderToString(app)
 
         const html =  ejs.render(template, {
           appString: content,
-          initialState: serialize(state)
+          initialState: serialize(state),
+          meta: helmet.meta.toString(),
+          title: helmet.title.toString(),
+          style: helmet.style.toString(),
+          link: helmet.link.toString()
         })
         res.send(html)
         // res.send(template.replace('<!-- app -->', content))
