@@ -71,32 +71,7 @@ module.exports = function (app) {
 
   app.get('*', function (req, res) {
     getTemplate().then(template => {
-      const routerContext = {}
-      const stores = createStoreMap()
-      const app = serverBundle(stores, routerContext, req.url)
-
-      asyncBootstrap(app).then(() => {
-        if (routerContext.url) {
-          res.status(302).setHeader('Location', routerContext.url)
-          res.end()
-          return
-        }
-        const helmet = Helmet.rewind()
-        const state = getStoreState(stores)
-        // console.log(stores.appState.count)
-        const content = ReactDomServer.renderToString(app)
-
-        const html =  ejs.render(template, {
-          appString: content,
-          initialState: serialize(state),
-          meta: helmet.meta.toString(),
-          title: helmet.title.toString(),
-          style: helmet.style.toString(),
-          link: helmet.link.toString()
-        })
-        res.send(html)
-        // res.send(template.replace('<!-- app -->', content))
-      })
-    })
+      return serverRender(serverBundle, template, req, res)
+    }).catch(next)
   })
 }
