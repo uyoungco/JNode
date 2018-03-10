@@ -68,6 +68,7 @@ module.exports = function (app) {
           return
         }
         const state = getStoreState(stores)
+        console.log(stores.appState.count)
         const content = ReactDomServer.renderToString(app)
 
         const html =  ejs.render(template, {

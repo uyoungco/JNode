@@ -12,7 +12,7 @@ export default class AppState {
   @observable count
   @observable name
   @computed get msg() {
-    return `${this.name} say conut is ${this.count}`
+    return `${this.name} say count is ${this.count}`
   }
   @action add() {
     this.count += 1
@@ -22,7 +22,7 @@ export default class AppState {
   }
   toJson() {
     return {
-      conut: this.count,
+      count: this.count, // TMD打错单词
       name: this.name,
     }
   }
