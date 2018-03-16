@@ -9,7 +9,6 @@ import Button from 'material-ui/Button'
 
 import { AppState } from '../../store/app-state'
 
-import Container from '../layout/container'
 
 
 @inject('appState') @observer
@@ -35,7 +34,7 @@ export default class TopicList extends React.Component {
   }
   render() {
     return (
-      <Container>
+      <div>
         <Helment>
           <title>This is topic list</title>
           <meta name="description" content="this is description" />
@@ -43,7 +42,7 @@ export default class TopicList extends React.Component {
         <Button raised color="primary">This is Button</Button>
         <input type="text" onChange={this.changName} />
         <span>{this.props.appState.msg}</span>
-      </Container>
+      </div>
     )
   }
 }
