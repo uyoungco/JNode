@@ -24,6 +24,7 @@ const config = webpackMerge(baseConfig, {
   ]
 })
 
+// localogost:8888/filename
 if (isDev) {
   config.devtool = '#cheap-module-eval-source-map'
   config.entry = {
