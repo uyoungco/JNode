@@ -6,6 +6,8 @@ import {
 import PropTypes from 'prop-types'
 import Helment from 'react-helmet'
 import Tabs, { Tab } from 'material-ui/Tabs'
+import List from 'material-ui/List'
+import { CircularProgress } from 'material-ui/Progress'
 // import Button from 'material-ui/Button'
 
 import { AppState } from '../../store/app-state'
@@ -13,7 +15,10 @@ import Container from '../layout/container'
 import TopicListItem from './list-item'
 
 
-@inject('appState') @observer
+@inject(stores => ({
+  appState: stores.appState,
+  topicStore: stores.topicStore,
+})) @observer
 export default class TopicList extends React.Component {
   constructor() {
     super()
@@ -24,6 +29,7 @@ export default class TopicList extends React.Component {
     this.listItemClick = this.listItemClick.bind(this)
   }
   componentDidMount() {
+    this.props.topicStore.fetchTopics()
     // do something here
   }
 
@@ -52,14 +58,21 @@ export default class TopicList extends React.Component {
       tabIndex,
     } = this.state
 
-    const topic = {
-      title: 'This is title',
-      username: 'Jokcy',
-      reply_count: 20,
-      visit_count: 30,
-      create_at: 'asdasdada',
-      tab: 'sare',
-    }
+    const {
+      topicStore,
+    } = this.props
+    const topicList = topicStore.topics
+    const syncingTopics = topicStore.syncing
+
+    // const topic = {
+    //   title: 'This is title',
+    //   username: 'Jokcy',
+    //   reply_count: 20,
+    //   visit_count: 30,
+    //   create_at: 'asdasdada',
+    //   tab: 'sare',
+    // }
+
     return (
       <Container>
         <Helment>
@@ -74,13 +87,26 @@ export default class TopicList extends React.Component {
           <Tab label="精品" />
           <Tab label="测试" />
         </Tabs>
-        <TopicListItem onClick={this.listItemClick} topic={topic} />
+        <List>
+          {
+            topicList.map(topic => <TopicListItem onClick={this.listItemClick} topic={topic} />)
+          }
+
+        </List>
+        {
+          syncingTopics ? (
+            <div>
+              <CircularProgress color="accent" size={100} />
+            </div>
+          ) :
+          null
+        }
       </Container>
     )
   }
 }
 
-
-TopicList.propTypes = {
+TopicList.wrappedComponent.propTypes = {
   appState: PropTypes.instanceOf(AppState),
+  topicStore: PropTypes.instanceOf(AppState),
 }
